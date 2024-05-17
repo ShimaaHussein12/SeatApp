@@ -18,9 +18,9 @@ public class Seat_history extends RecyclerView.Adapter<AvailableProductViewHolde
     private Seat_history.OnItemClickListener itemClickListener;
 
 
-    public Seat_history(List<Seat> seats, Seat_history.OnItemClickListener itemClickListener) {
+    public Seat_history(List<Seat> seats) {
         this.seats = seats;
-        this.itemClickListener = itemClickListener;
+        //this.itemClickListener = itemClickListener;
     }
 
     public interface OnItemClickListener {
@@ -42,8 +42,8 @@ public class Seat_history extends RecyclerView.Adapter<AvailableProductViewHolde
         holder.to.setText(seat.getTo());
         holder.startTime.setText(seat.getStart_time());
         holder.endTime.setText(seat.getEnd_time());
-        holder.total.setText("Total"+String.valueOf(seat.getTotal()));
-
+        holder.total.setText("Total:"+String.valueOf(seat.getTotal()));
+        holder.count.setText("Count:"+String.valueOf(seat.getTotal()));
 
 
 
@@ -65,7 +65,7 @@ public class Seat_history extends RecyclerView.Adapter<AvailableProductViewHolde
 }
 
 class AvailableProductViewHolder extends RecyclerView.ViewHolder {
-    public TextView from,to,startTime,endTime,total;
+    public TextView from,to,startTime,endTime,total,count;
 
 
     public AvailableProductViewHolder(@NonNull View itemView) {
@@ -75,6 +75,8 @@ class AvailableProductViewHolder extends RecyclerView.ViewHolder {
         startTime = itemView.findViewById(R.id.startTime);
         endTime = itemView.findViewById(R.id.endTime);
         total = itemView.findViewById(R.id.total);
+        count=itemView.findViewById(R.id.Count);
+
         // Initialize other views here
     }
 }

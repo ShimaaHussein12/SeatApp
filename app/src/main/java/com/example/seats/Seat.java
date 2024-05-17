@@ -2,7 +2,24 @@ package com.example.seats;
 
 public class Seat {
     private String from, to, start_time,end_time;
-    private Double total;
+    private int total,count;
+
+    public Seat(String from, String to, String start_time, String end_time, int count, int total) {
+        this.from = from;
+        this.to = to;
+        this.start_time = start_time;
+        this.end_time = end_time;
+        this.total = total;
+        this.count = count;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
 
     public String getFrom() {
         return from;
@@ -36,11 +53,11 @@ public class Seat {
         this.end_time = end_time;
     }
 
-    public Double getTotal() {
+    public int getTotal() {
         return total;
     }
 
-    public void setTotal(Double total) {
+    public void setTotal(int total) {
         this.total = total;
     }
 }
