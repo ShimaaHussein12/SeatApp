@@ -101,13 +101,13 @@ public class loginActivity extends AppCompatActivity {
                                     String token = response.getString("token");
 
                                     //JSONObject userJason=response.getJSONObject();
-                                  User user=new User(userData.getString("BusinessUserID"),userData.getString("Username"),userData.getString("UserEmail"),token,userData.getString("UserMobileNumber"),userData.getString("UserPassword"));
+                                  User user=new User(userData.getString("UserNationalID"),userData.getString("Username"),userData.getString("UserEmail"),token,userData.getString("UserMobileNumber"),userData.getString("UserPassword"));
                                    SessionManager.getInstance(getApplicationContext()).userLogin(user);
                                     finish();
                                     startActivity(new Intent(loginActivity.this, MainActivity.class));
 
                                 } else {
-                                    Toast.makeText(loginActivity.this, "login failed: " + message, Toast.LENGTH_LONG).show();
+                                    Toast.makeText(loginActivity.this, "login fa/iled: " + message, Toast.LENGTH_LONG).show();
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();

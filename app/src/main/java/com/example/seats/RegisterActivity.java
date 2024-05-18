@@ -14,29 +14,19 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
-import com.example.seats.Controller.SessionManager;
 import com.example.seats.Controller.VollySingletone;
-import com.example.seats.Model.User;
 import com.example.seats.SERVER.Urls;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class RegisterActivity extends AppCompatActivity {
-    EditText emailEditText, nameEditText, passwordEditText, confirmPasswordEditText, phoneEditText, idEditText;
+    EditText emailEditText, nameEditText, passwordEditText, confirmPasswordEditText, phoneEditText, idEditText, nationalIdEditText;
     Button registerButton;
     TextView goToLoginTextView;
 
@@ -52,7 +42,8 @@ public class RegisterActivity extends AppCompatActivity {
         passwordEditText = findViewById(R.id.reg_pass);
         confirmPasswordEditText = findViewById(R.id.reg_confirm_pass);
         phoneEditText = findViewById(R.id.reg_phone);
-        idEditText = findViewById(R.id.reg_id);
+        //idEditText = findViewById(R.id.reg_id);
+        nationalIdEditText = findViewById(R.id.reg_id); // Add a new EditText for National ID
         registerButton = findViewById(R.id.reg_btn);
         goToLoginTextView = findViewById(R.id.reg_to_log);
 
@@ -74,11 +65,12 @@ public class RegisterActivity extends AppCompatActivity {
                 String password = passwordEditText.getText().toString().trim();
                 String confirmPassword = confirmPasswordEditText.getText().toString().trim();
                 String phone = phoneEditText.getText().toString().trim();
-                String id = idEditText.getText().toString().trim();
+                //String id = idEditText.getText().toString().trim();
+                String nationalId = nationalIdEditText.getText().toString().trim();
 
                 // Validate input fields
-                if (TextUtils.isEmpty(name) || TextUtils.isEmpty(id) || TextUtils.isEmpty(email) ||
-                        TextUtils.isEmpty(password) || TextUtils.isEmpty(confirmPassword) || TextUtils.isEmpty(phone)) {
+                if (TextUtils.isEmpty(name)  || TextUtils.isEmpty(email) ||
+                        TextUtils.isEmpty(password) || TextUtils.isEmpty(confirmPassword) || TextUtils.isEmpty(phone) || TextUtils.isEmpty(nationalId)) {
                     Toast.makeText(RegisterActivity.this, "All fields are required", Toast.LENGTH_LONG).show();
                     return;
                 }
@@ -94,22 +86,28 @@ public class RegisterActivity extends AppCompatActivity {
                     confirmPasswordEditText.requestFocus();
                     return;
                 }
+                if (nationalId.length() != 14) {
+                    nationalIdEditText.setError("National ID must be 14 digits");
+                    nationalIdEditText.requestFocus();
+                    return;
+                }
 
                 // Perform registration request
-                registerUser(name, email, password, phone,id);
+                registerUser(name, email, password, phone,  nationalId);
             }
         });
     }
 
-    private void registerUser(String name, String email, String password, String phone,String id) {
+    private void registerUser(String name, String email, String password, String phone, String nationalId) {
         try {
             JSONObject jsonBody = new JSONObject();
             jsonBody.put("UserStatus", true);
-            jsonBody.put("BusinessUserID", id);
+            ; // Ensure BusinessUserID is an integer
             jsonBody.put("Username", name);
             jsonBody.put("UserPassword", password);
             jsonBody.put("UserMobileNumber", phone);
             jsonBody.put("UserEmail", email);
+            jsonBody.put("UserNationalID", nationalId); // Add National ID to the JSON body
 
             String requestBody = jsonBody.toString();
 
@@ -120,6 +118,12 @@ public class RegisterActivity extends AppCompatActivity {
                             try {
                                 String message = response.getString("message");
                                 if (message.equals("success")) {
+                                    // Optionally, handle additional data from the response
+                                    JSONObject data = response.getJSONObject("data");
+                                    String organizationId = data.getString("OrganizationID");
+                                    String orgAdminId = data.getString("OrgAdminID");
+                                    String permissionId = data.getString("PermissionID");
+
                                     Toast.makeText(RegisterActivity.this, "Registration successful", Toast.LENGTH_LONG).show();
                                     startActivity(new Intent(RegisterActivity.this, loginActivity.class));
                                     finish();
@@ -151,9 +155,9 @@ public class RegisterActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
             Toast.makeText(RegisterActivity.this, "JSON creation error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            Toast.makeText(RegisterActivity.this, "ID must be a number: " + e.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
-
-
-
 }
